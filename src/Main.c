@@ -26,9 +26,6 @@ struct InitializationResults {
 struct InitializationResults init_sdl();
 
 int main(int argc, char *argv[]) {
-	//Placeholder variables
-	int c = 0;
-
 	//Initializing SDL
 	SDL_Window *window;
 	SDL_Renderer *renderer;
@@ -38,27 +35,43 @@ int main(int argc, char *argv[]) {
 	window = results.window;
 	renderer = results.renderer;
 
-	printf("%p", window);
-
 	SDL_RaiseWindow(window);
 
 	//Main loop
 	int running = 1;
 	SDL_Event event;
+
+	SDL_Rect rect;
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 20;
+	rect.h = 20;
+
 	while (running) {
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_WINDOWEVENT:
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
+				SDL_RenderClear(renderer);
+				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+				SDL_RenderDrawRect(renderer, &rect);
+
 				//DRAW GAME ON ANY WINDOW EVENT
+				SDL_RenderPresent(renderer);
 				break;
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
-				case SDLK_w:
-					printf("%d\n", ++c);
+				case SDLK_d:
+					rect.x += 50;
 					break;
 				case SDLK_s:
-					printf("%d\n", --c);
+					rect.y += 50;
 					break;
+				case SDLK_a:
+					rect.x -= 50;
+					break;
+				case SDLK_w:
+					rect.y -= 50;
 				}
 				break;
 			case SDL_QUIT:
