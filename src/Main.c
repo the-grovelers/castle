@@ -10,14 +10,18 @@
 #define SCREEN_HEIGHT 96
 #define ENABLE_LOGICAL_RESIZE
 
-typedef struct point {
+typedef struct Point {
 	int y;
 	int x;
-} point;
+} Point;
 
-typedef struct entity {
-	point pos;
-} entity;
+typedef struct Entity {
+	Point pos;
+} Entity;
+
+typedef struct Keystate {
+	_Bool w, a, s, d;
+} Keystate;
 
 struct InitializationResults {
 	SDL_Window *window;
@@ -58,33 +62,66 @@ int main(int argc, char *argv[]) {
 	rect.w = 20;
 	rect.h = 20;
 
+	Keystate keystate;
+	keystate.a = 0;
+	keystate.d = 0;
+	keystate.s = 0;
+	keystate.w = 0;
+
 	while (running) {
+		// Events
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_WINDOWEVENT:
-				render(renderer, &rect);
 				break;
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				case SDLK_d:
-					rect.x += 50;
+					keystate.d = 1;
 					break;
 				case SDLK_s:
-					rect.y += 50;
+					keystate.s = 1;
 					break;
 				case SDLK_a:
-					rect.x -= 50;
+					keystate.a = 1;
 					break;
 				case SDLK_w:
-					rect.y -= 50;
+					keystate.w = 1;
 				}
-				render(renderer, &rect);
+				break;
+			case SDL_KEYUP:
+				switch (event.key.keysym.sym) {
+				case SDLK_d:
+					keystate.d = 0;
+					break;
+				case SDLK_s:
+					keystate.s = 0;
+					break;
+				case SDLK_a:
+					keystate.a = 0;
+					break;
+				case SDLK_w:
+					keystate.w = 0;
+				}
 				break;
 			case SDL_QUIT:
 				running = 0;
 				break;
 			}
 		}
+
+		// Update Game Objects (may respond to events handled immediately above).
+		if (keystate.a)
+			rect.x--;
+		if (keystate.d)
+			rect.x++;
+		if (keystate.w)
+			rect.y--;
+		if (keystate.s)
+			rect.y++;
+
+		// Render updated game objects
+		render(renderer, &rect);
 	}
 
 	//Cleanup
