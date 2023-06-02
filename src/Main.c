@@ -28,15 +28,19 @@ struct InitializationResults {
 	SDL_Renderer *renderer;
 };
 
+typedef struct Character {
+	Point pos;
+} Character;
+
 struct InitializationResults init_sdl();
 
-void render(SDL_Renderer *renderer, SDL_Rect *rect) {
+void render(SDL_Renderer *renderer, Character *character) {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_RenderDrawRect(renderer, rect);
+//	SDL_RenderDrawRect(renderer, rect);
 
-	//DRAW GAME ON ANY WINDOW EVENT
+//DRAW GAME ON ANY WINDOW EVENT
 	SDL_RenderPresent(renderer);
 }
 
@@ -56,11 +60,9 @@ int main(int argc, char *argv[]) {
 	int running = 1;
 	SDL_Event event;
 
-	SDL_Rect rect;
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 20;
-	rect.h = 20;
+	Character character;
+	character.pos.y = 0;
+	character.pos.x = 0;
 
 	Keystate keystate;
 	keystate.a = 0;
@@ -112,16 +114,16 @@ int main(int argc, char *argv[]) {
 
 		// Update Game Objects (may respond to events handled immediately above).
 		if (keystate.a)
-			rect.x--;
+			character.pos.x--;
 		if (keystate.d)
-			rect.x++;
+			character.pos.x++;
 		if (keystate.w)
-			rect.y--;
+			character.pos.y--;
 		if (keystate.s)
-			rect.y++;
+			character.pos.y++;
 
 		// Render updated game objects
-		render(renderer, &rect);
+		render(renderer, &character);
 	}
 
 	//Cleanup
