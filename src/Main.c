@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define WINDOW_TITLE "Hello World!"
 #define WINDOW_WIDTH 640
@@ -27,7 +28,9 @@ int main(int argc, char *argv[]) {
   SDL_Window *window;
   SDL_Renderer *renderer;
 
-  init_sdl(window, renderer);
+  if (!init_sdl(window, renderer))
+    exit(1);
+
 	SDL_RaiseWindow(window);
 
   //Main loop
@@ -73,10 +76,19 @@ int init_sdl(SDL_Window *window, SDL_Renderer *renderer) {
       SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
       WINDOW_WIDTH, WINDOW_HEIGHT,
       WINDOW_FULLSCREEN ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+  if (window == NULL) {
+    fprintf(stderr, "Window couldn't be created\n");
+    return 0;
+  }
 
 	renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED
 					| SDL_RENDERER_TARGETTEXTURE);
+  if (renderer == NULL) {
+    fprintf(stderr, "Renderer couldn't be created\n");
+    return 0;
+  }
+
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
