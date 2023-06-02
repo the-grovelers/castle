@@ -8,6 +8,7 @@
 #define WINDOW_FULLSCREEN 0
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 96
+#define ENABLE_LOGICAL_RESIZE
 
 typedef struct point {
 	int y;
@@ -117,7 +118,9 @@ struct InitializationResults init_sdl() {
 		exit(1);
 	}
 
+#ifdef ENABLE_LOGICAL_RESIZE
 	SDL_RenderSetLogicalSize(res.renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+#endif
 
 	return res;
 }
